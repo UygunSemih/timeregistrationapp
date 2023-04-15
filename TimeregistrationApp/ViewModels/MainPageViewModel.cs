@@ -45,7 +45,7 @@ namespace TimeregistrationApp.ViewModels
                 registratie.Note = Notitie;
                 timeService.AddTimeRegistration(registratie);
 
-                await Application.Current.MainPage.DisplayAlert("Success", $"{registratie} toegevoegd!", "OK");
+                await Application.Current.MainPage.DisplayAlert("Success", $"{registratie} added!", "OK");
 
                 StartTijd = TimeSpan.Zero;
                 EindTijd = TimeSpan.Zero;
