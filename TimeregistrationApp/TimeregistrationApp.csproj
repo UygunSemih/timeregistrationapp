@@ -12,7 +12,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<!-- Display name -->
-		<ApplicationTitle>Time registratiom</ApplicationTitle>
+		<ApplicationTitle>Time registration</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.uygunsemih.timeregistration</ApplicationId>
