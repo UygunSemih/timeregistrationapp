@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TimeregistrationApp.Views.TijdRegistratieListView"
+             xmlns:models="clr-namespace:TimeregistrationApp.Models"
+             xmlns:viewmodels="clr-namespace:TimeregistrationApp.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="History"             
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
+             x:DataType="viewmodels:TijdRegistratieListViewModel">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+                EventName="Appearing"
+                Command="{Binding LoadTijdregistratiesCommand}" />
+    </ContentPage.Behaviors>
+    <ScrollView>
+        <VerticalStackLayout>
+            <Picker x:Name="monthPicker" Title="Filter month" SelectedIndex="{Binding SelectedMaandIndex}" 
+                    Margin="10"
+                    FontSize="18">
+                <Picker.Items>
+                    <x:String>All</x:String>
+                    <x:String>January</x:String>
+                    <x:String>February</x:String>
+                    <x:String>March</x:String>
+                    <x:String>April</x:String>
+                    <x:String>May</x:String>
+                    <x:String>June</x:String>
+                    <x:String>July</x:String>
+                    <x:String>August</x:String>
+                    <x:String>September</x:String>
+                    <x:String>October</x:String>
+                    <x:String>November</x:String>
+                    <x:String>December</x:String>
+                </Picker.Items>
+                <Picker.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="SelectedIndexChanged"
+                                       Command="{Binding MonthSelectedCommand}"/>
+                </Picker.Behaviors>
+            </Picker>
+            <Label Text="{Binding DagenCountString}"  />
+            <Button Margin="10" Text="{Binding DownloadButtonText}" TextColor="{StaticResource Black}"  Command="{Binding GeneratePDFCommand}"/>
+            <Line/>
+            <CollectionView ItemsSource="{Binding AllTijdRegistraties}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:TijdsRegistratie">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="9*"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Stroke="{StaticResource Black}"
+                                StrokeThickness="1"                                
+                                WidthRequest="325"
+                                StrokeShape="RoundRectangle 40,0,0,40"
+                                Background="{StaticResource PrimaryBrush}"
+                                Padding="16,8"
+                                HorizontalOptions="Center">
+                                
+                                <Label 
+                                    Text="{Binding .}" 
+                                    TextColor="{StaticResource Black}"
+                                    FontSize="18"
+                                    HorizontalTextAlignment="Center"
+                                    FontAttributes="Bold"/>
+                                
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TijdRegistratieListViewModel}}, Path=GoToDetailCommand}"
+                                    CommandParameter="{Binding .}"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                            
+                            <ImageButton Source="remove.png" HeightRequest="20" Grid.Column="1"
+                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TijdRegistratieListViewModel}}, Path=VerwijderRegistratieCommand}"
+                                         CommandParameter="{Binding .}"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

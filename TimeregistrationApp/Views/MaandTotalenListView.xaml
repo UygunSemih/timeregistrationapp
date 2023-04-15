@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TimeregistrationApp.Views.MaandTotalenListView"
+             xmlns:models="clr-namespace:TimeregistrationApp.Models"
+             xmlns:viewmodels="clr-namespace:TimeregistrationApp.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Total hours per month"
+             x:DataType="viewmodels:MaandTotalenListViewModel">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+                EventName="Appearing"
+                Command="{Binding GroupByMonthCommand}" />
+    </ContentPage.Behaviors>
+    <ScrollView>
+        <VerticalStackLayout >
+            <CollectionView ItemsSource="{Binding AllMonthlyOverviews}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:MonthlyOverview">
+                        <Border Stroke="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Gray500}}"
+                                StrokeThickness="1"                                
+                                WidthRequest="350"
+                                StrokeShape="RoundRectangle 40,0,0,40"
+                                Background="{StaticResource PrimaryBrush}"
+                                Padding="16,8"
+                                HorizontalOptions="Center">
+                            <Label Text="{Binding .}" 
+                                   TextColor="{StaticResource Black}"
+                                   FontSize="18"
+                                   HorizontalTextAlignment="Center"
+                                   FontAttributes="Bold"/>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
