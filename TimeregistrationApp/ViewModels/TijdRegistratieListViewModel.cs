@@ -29,7 +29,7 @@ namespace TimeregistrationApp.ViewModels
         [ObservableProperty]
         private string downloadButtonText = "Download PDF";
 
-        private TimeService timeService;
+        private readonly TimeService timeService;
 
         public TijdRegistratieListViewModel(TimeService ts)
         {
@@ -38,11 +38,11 @@ namespace TimeregistrationApp.ViewModels
             registraties = new List<TijdsRegistratie>();
         }
 
-        public static string getFullName(int month)
+        public static string GetFullName(int month)
         {
             if(month != 0)
             {
-                DateTime date = new DateTime(2020, month, 1);
+                DateTime date = new(2020, month, 1);
                 CultureInfo englishCulture = CultureInfo.CreateSpecificCulture("en-US");
                 return date.ToString("MMMM", englishCulture);
             }
@@ -69,13 +69,13 @@ namespace TimeregistrationApp.ViewModels
                     AllTijdRegistraties.Add(registratie);
                 }
             }
-            DagenCountString = $"Total {AllTijdRegistraties.Count()} {(AllTijdRegistraties.Count == 1 ? "day" : "days")} | {getFullName(selectedMaandIndex)}";
+            DagenCountString = $"Total {AllTijdRegistraties.Count} {(AllTijdRegistraties.Count == 1 ? "day" : "days")} | {GetFullName(selectedMaandIndex)}";
         }
 
         [RelayCommand]
         public async void GeneratePDF()
         {
-            string titel = $"Overview {getFullName(selectedMaandIndex)} - {DateTime.Now.Year}";
+            string titel = $"Overview {GetFullName(selectedMaandIndex)} - {DateTime.Now.Year}";
             if (selectedMaandIndex != 0)
             {
                 await PDFGenerator.GeneratePDF(registraties.Where(r => r.StartTime.Month == selectedMaandIndex).OrderBy(x => x.EndTime).ToList(), titel);
@@ -101,7 +101,7 @@ namespace TimeregistrationApp.ViewModels
 
             registraties.Remove(tijdsRegistratie);
             AllTijdRegistraties.Remove(tijdsRegistratie);
-            DagenCountString = $"Total {AllTijdRegistraties.Count()} {(AllTijdRegistraties.Count == 1 ? "day" : "days")} | {getFullName(selectedMaandIndex)}";
+            DagenCountString = $"Total {AllTijdRegistraties.Count} {(AllTijdRegistraties.Count == 1 ? "day" : "days")} | {GetFullName(selectedMaandIndex)}";
         }
 
         [RelayCommand]
