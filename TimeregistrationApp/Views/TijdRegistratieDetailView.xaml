@@ -5,7 +5,7 @@
              xmlns:models="clr-namespace:TimeregistrationApp.Models"
              xmlns:viewmodels="clr-namespace:TimeregistrationApp.ViewModels"
              x:DataType="viewmodels:TijdRegistratieDetailViewModel"
-             Title="Tijdsregistratie wijzigen">
+             Title="Edit Time Registration">
     
     <StackLayout Orientation="Vertical" Margin="20">
         

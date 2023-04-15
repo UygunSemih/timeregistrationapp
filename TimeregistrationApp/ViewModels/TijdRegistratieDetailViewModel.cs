@@ -23,7 +23,7 @@ namespace TimeregistrationApp.ViewModels
         [ObservableProperty]
         private string? notitie;
 
-        private TimeService timeService;
+        private readonly TimeService timeService;
         public TijdRegistratieDetailViewModel(TimeService ts)
         {
             timeService = ts;
@@ -48,7 +48,7 @@ namespace TimeregistrationApp.ViewModels
             tijdsRegistratie.StartTime = start;
             tijdsRegistratie.EndTime = end;
             tijdsRegistratie.Note = notitie;
-            var result = await Application.Current.MainPage.DisplayAlert("Bevestiging nodig!", $"{tijdsRegistratie} updaten?", "OK!", "Annuleer");
+            var result = await Application.Current.MainPage.DisplayAlert("Confirm!", $"Update {tijdsRegistratie}?", "OK!", "Cancel");
 
             if (result)
             {
