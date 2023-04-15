@@ -75,7 +75,7 @@ namespace TimeregistrationApp.ViewModels
         [RelayCommand]
         public async void GeneratePDF()
         {
-            string titel = $"Timeregistration Overview {getFullName(selectedMaandIndex)} - {DateTime.Now.Year}";
+            string titel = $"Overview {getFullName(selectedMaandIndex)} - {DateTime.Now.Year}";
             if (selectedMaandIndex != 0)
             {
                 await PDFGenerator.GeneratePDF(registraties.Where(r => r.StartTime.Month == selectedMaandIndex).OrderBy(x => x.EndTime).ToList(), titel);

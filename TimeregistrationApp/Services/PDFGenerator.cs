@@ -33,9 +33,9 @@ public static class PDFGenerator
             var table = new Table(3, true);
 
             // Create the header cells
-            var headerDatum = new Cell().Add(new Paragraph("Datum").SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD)));
-            var headerUren = new Cell().Add(new Paragraph("Gepresteerde uren").SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD)));
-            var headerNotitie = new Cell().Add(new Paragraph("Toegevoegde notitie").SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD)));
+            var headerDatum = new Cell().Add(new Paragraph("Date").SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD)));
+            var headerUren = new Cell().Add(new Paragraph("Worked hours").SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD)));
+            var headerNotitie = new Cell().Add(new Paragraph("Note").SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD)));
 
             // Add the header cells to the first row of the table
             table.AddHeaderCell(headerDatum);
@@ -59,7 +59,7 @@ public static class PDFGenerator
                 totalHours += duration.TotalHours;
             }
             document.Add(new Paragraph("\n\n"));
-            document.Add(new Paragraph($"Total aantal uren: {totalHours}"));
+            document.Add(new Paragraph($"Total hours: {totalHours}"));
 
             document.Close();
         }
