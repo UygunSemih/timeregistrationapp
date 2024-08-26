@@ -24,37 +24,70 @@ namespace TimeregistrationApp.ViewModels
         private string dagenCountString;
 
         [ObservableProperty]
-        private static int selectedMaandIndex = DateTime.Now.Month;
+        private int selectedMaandIndex;
 
         [ObservableProperty]
         private string downloadButtonText = "Download PDF";
 
+        public ObservableCollection<string> MonthPickerItems { get; set; }
+
         private readonly TimeService timeService;
+
+        private readonly Dictionary<int, DateTime> monthYearMap;
 
         public TijdRegistratieListViewModel(TimeService ts)
         {
             timeService = ts;
             AllTijdRegistraties = new ObservableCollection<TijdsRegistratie>();
             registraties = new List<TijdsRegistratie>();
+            MonthPickerItems = new ObservableCollection<string>();
+            monthYearMap = new Dictionary<int, DateTime>();
+
+            LoadTijdregistraties();
         }
 
-        public static string GetFullName(int month)
+        private void PopulateMonthPickerItems()
         {
-            if(month != 0)
+            MonthPickerItems.Clear();
+            monthYearMap.Clear();
+            MonthPickerItems.Add("All");
+            int index = 1;
+            int defaultIndex = 0;
+
+            var groupedRegistraties = registraties
+                .GroupBy(r => new { r.StartTime.Year, r.StartTime.Month })
+                .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month);
+
+            foreach (var group in groupedRegistraties)
             {
-                DateTime date = new(2020, month, 1);
-                CultureInfo englishCulture = CultureInfo.CreateSpecificCulture("en-US");
-                return date.ToString("MMMM", englishCulture);
+                string monthYear = $"{CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(group.Key.Month)} {group.Key.Year}";
+                MonthPickerItems.Add(monthYear);
+                DateTime date = new(group.Key.Year, group.Key.Month, 1);
+                monthYearMap.Add(index, date);
+
+                if (group.Key.Year == DateTime.Now.Year && group.Key.Month == DateTime.Now.Month)
+                {
+                    defaultIndex = index;
+                }
+
+                index++;
             }
-            return "All";            
+
+            SelectedMaandIndex = defaultIndex;
+
+            OnPropertyChanged(nameof(MonthPickerItems));
         }
 
         [RelayCommand]
         private void OnMonthSelected()
         {
-            if (selectedMaandIndex != 0)
+            if (selectedMaandIndex > 0 && monthYearMap.ContainsKey(selectedMaandIndex))
             {
-                var filteredRegistraties = registraties.Where(r => r.StartTime.Month == selectedMaandIndex).OrderBy(x => x.EndTime);
+                DateTime selectedDate = monthYearMap[selectedMaandIndex];
+                var filteredRegistraties = registraties
+                    .Where(r => r.StartTime.Month == selectedDate.Month && r.StartTime.Year == selectedDate.Year)
+                    .OrderBy(x => x.EndTime);
+
                 AllTijdRegistraties.Clear();
                 foreach (var registratie in filteredRegistraties)
                 {
@@ -69,28 +102,49 @@ namespace TimeregistrationApp.ViewModels
                     AllTijdRegistraties.Add(registratie);
                 }
             }
-            DagenCountString = $"Total {AllTijdRegistraties.Count} {(AllTijdRegistraties.Count == 1 ? "day" : "days")} | {GetFullName(selectedMaandIndex)}";
+            UpdateDagenCountString();
+        }
+
+        private void UpdateDagenCountString()
+        {
+            int aantalDagen = AllTijdRegistraties.Where(r => !r.IsHoliday).Count();
+            int verlofDagen = AllTijdRegistraties.Count - aantalDagen;
+
+            string totalDaysText = $"{aantalDagen} {(aantalDagen == 1 ? "day" : "days")}";
+
+            string vacationDaysText = verlofDagen > 0
+                ? $"{verlofDagen} {(verlofDagen == 1 ? "day" : "days")} holiday"
+                : string.Empty;
+
+            string monthText = (selectedMaandIndex >= 0 && selectedMaandIndex < MonthPickerItems.Count)
+                ? MonthPickerItems[selectedMaandIndex]
+                : "All";
+
+            DagenCountString = $"Total {totalDaysText}{(string.IsNullOrEmpty(vacationDaysText) ? string.Empty : " | " + vacationDaysText)} | {monthText}";
         }
 
         [RelayCommand]
         public async void GeneratePDF()
         {
-            string titel = $"Overview {GetFullName(selectedMaandIndex)} - {DateTime.Now.Year}";
-            if (selectedMaandIndex != 0)
+            string titel = $"Overview {MonthPickerItems[selectedMaandIndex]} - {DateTime.Now.Year}";
+            if (selectedMaandIndex > 0 && monthYearMap.ContainsKey(selectedMaandIndex))
             {
-                await PDFGenerator.GeneratePDF(registraties.Where(r => r.StartTime.Month == selectedMaandIndex).OrderBy(x => x.EndTime).ToList(), titel);
+                DateTime selectedDate = monthYearMap[selectedMaandIndex];
+                await PDFGenerator.GeneratePDF(
+                    registraties.Where(r => r.StartTime.Month == selectedDate.Month && r.StartTime.Year == selectedDate.Year)
+                                .OrderBy(x => x.EndTime).ToList(), titel);
             }
             else
             {
                 await PDFGenerator.GeneratePDF(registraties.OrderBy(x => x.EndTime).ToList(), titel);
             }
-                
         }
 
         [RelayCommand]
         public async void LoadTijdregistraties()
         {
             registraties = await timeService.GetAllTimeRegistrations();
+            PopulateMonthPickerItems();
             OnMonthSelected();
         }
 
@@ -101,7 +155,9 @@ namespace TimeregistrationApp.ViewModels
 
             registraties.Remove(tijdsRegistratie);
             AllTijdRegistraties.Remove(tijdsRegistratie);
-            DagenCountString = $"Total {AllTijdRegistraties.Count} {(AllTijdRegistraties.Count == 1 ? "day" : "days")} | {GetFullName(selectedMaandIndex)}";
+            DagenCountString = $"Total {AllTijdRegistraties.Count} {(AllTijdRegistraties.Count == 1 ? "day" : "days")} | {MonthPickerItems[selectedMaandIndex]}";
+            PopulateMonthPickerItems();
+            UpdateDagenCountString();
         }
 
         [RelayCommand]

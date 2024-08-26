@@ -17,27 +17,14 @@
         <VerticalStackLayout>
             <Picker x:Name="monthPicker" Title="Filter month" SelectedIndex="{Binding SelectedMaandIndex}" 
                     Margin="10"
-                    FontSize="18">
-                <Picker.Items>
-                    <x:String>All</x:String>
-                    <x:String>January</x:String>
-                    <x:String>February</x:String>
-                    <x:String>March</x:String>
-                    <x:String>April</x:String>
-                    <x:String>May</x:String>
-                    <x:String>June</x:String>
-                    <x:String>July</x:String>
-                    <x:String>August</x:String>
-                    <x:String>September</x:String>
-                    <x:String>October</x:String>
-                    <x:String>November</x:String>
-                    <x:String>December</x:String>
-                </Picker.Items>
+                    FontSize="18"
+                    ItemsSource="{Binding MonthPickerItems}">
                 <Picker.Behaviors>
                     <toolkit:EventToCommandBehavior EventName="SelectedIndexChanged"
                                        Command="{Binding MonthSelectedCommand}"/>
                 </Picker.Behaviors>
             </Picker>
+
             <Label Text="{Binding DagenCountString}"  />
             <Button Margin="10" Text="{Binding DownloadButtonText}" TextColor="{StaticResource Black}"  Command="{Binding GeneratePDFCommand}"/>
             <Line/>

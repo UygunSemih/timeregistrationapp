@@ -10,7 +10,7 @@ namespace TimeregistrationApp.Services
 {
     public class TimeService
     {
-        private TimeRegistrationSQLiteRepository timeRegistrationRepo;
+        private readonly TimeRegistrationSQLiteRepository timeRegistrationRepo;
 
         public TimeService(TimeRegistrationSQLiteRepository repo)
         {

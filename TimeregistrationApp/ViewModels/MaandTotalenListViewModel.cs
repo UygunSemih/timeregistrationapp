@@ -1,12 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimeregistrationApp.Models;
 using TimeregistrationApp.Services;
 
@@ -21,7 +15,7 @@ namespace TimeregistrationApp.ViewModels
 
         public ObservableCollection<MonthlyOverview> AllMonthlyOverviews { get; set; }
 
-        private TimeService timeService;
+        private readonly TimeService timeService;
 
         public MaandTotalenListViewModel(TimeService timeService)
         {
@@ -42,15 +36,18 @@ namespace TimeregistrationApp.ViewModels
             }
 
             var groupedRegistraties = AllTijdRegistraties
-            .GroupBy(r => r.StartTime.Month)
-            .Select(g => new MonthlyOverview
-            {
-                Month = g.Key,
-                TotalTime = g.Sum(r => (r.EndTime - r.StartTime).TotalMinutes)
-            });
+                .GroupBy(r => new { r.StartTime.Year, r.StartTime.Month })
+                .OrderBy(g => g.Key.Year)
+                .ThenBy(g => g.Key.Month)
+                .Select(g => new MonthlyOverview
+                {
+                    Month = g.Key.Month,
+                    Year = g.Key.Year,
+                    TotalTime = g.Sum(r => (r.EndTime - r.StartTime).TotalMinutes)
+                });
 
             AllMonthlyOverviews.Clear();
-            foreach(var s in groupedRegistraties)
+            foreach (var s in groupedRegistraties)
             {
                 AllMonthlyOverviews.Add(s);
             }

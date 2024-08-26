@@ -11,6 +11,7 @@ namespace TimeregistrationApp.Repositories
     public class TimeRegistrationSQLiteRepository
     {
         SQLiteAsyncConnection context;
+        const int LatestVersion = 2;
 
         public TimeRegistrationSQLiteRepository()
         {
@@ -26,6 +27,45 @@ namespace TimeregistrationApp.Repositories
 
             context = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
             await context.CreateTableAsync<TijdsRegistratie>();
+            await context.CreateTableAsync<DbVersion>();
+
+            await PerformMigrations();
+        }
+
+        private async Task PerformMigrations()
+        {
+            var version = await context.Table<DbVersion>().FirstOrDefaultAsync();
+            int currentVersion = 0;
+
+            if (version == null)
+            {
+                var firstVersion = new DbVersion { Id = 1, Version = 1 };
+                currentVersion = 1;
+                await context.InsertAsync(firstVersion);
+            }
+            else
+            {
+                currentVersion = version.Version;
+            }
+
+
+            if (currentVersion < LatestVersion)
+            {
+                if (currentVersion == 1)
+                {
+                    var columns = await context.GetTableInfoAsync("TijdsRegistratie");
+                    bool columnExists = columns.Any(col => col.Name == "IsHoliday");
+
+                    if (!columnExists)
+                    {
+                        await context.ExecuteAsync("ALTER TABLE TijdsRegistratie ADD COLUMN IsHoliday INTEGER NOT NULL DEFAULT 0");
+                    }
+
+                    await context.ExecuteAsync("UPDATE DbVersion SET Version = 2 WHERE Id = 1");
+                }
+                // Future migrations can be added here
+            }
+
         }
 
         public async Task<List<TijdsRegistratie>> GetTimeRegistrationsAsync()

@@ -9,48 +9,64 @@ namespace TimeregistrationApp.ViewModels
     public partial class MainPageViewModel : ObservableObject
     {
         [ObservableProperty]
-        private TimeSpan startTijd;
+        private TimeSpan startTijd = new(9, 0, 0);
+
         [ObservableProperty]
-        private TimeSpan eindTijd;
+        private TimeSpan eindTijd = new(15, 0, 0);
+
         [ObservableProperty]
         private DateTime startDatum = DateTime.Today;
+
         [ObservableProperty]
         private string? notitie;
 
-        private TimeService timeService;
+        [ObservableProperty]
+        private bool isHoliday; 
+
+        private readonly TimeService timeService;
 
         public MainPageViewModel(TimeService ts)
         {
-            timeService= ts;
+            timeService = ts;
         }
 
         [RelayCommand]
         private async void SaveTijdsRegistratie()
         {
-            var registratie = new TijdsRegistratie();
-            var start = new DateTime(StartDatum.Year, StartDatum.Month, StartDatum.Day, StartTijd.Hours, StartTijd.Minutes, StartTijd.Seconds);
-            var end = new DateTime(StartDatum.Year, StartDatum.Month, StartDatum.Day, EindTijd.Hours, EindTijd.Minutes, EindTijd.Seconds);
-            if(end < start)
+            var registratie = new TijdsRegistratie
             {
-                await Application.Current.MainPage.DisplayAlert("Failed", $"End time can not be smaller than start time!", "OK");
-            }
-            else if (end == start)
+                StartTime = new DateTime(StartDatum.Year, StartDatum.Month, StartDatum.Day, StartTijd.Hours, StartTijd.Minutes, StartTijd.Seconds),
+                EndTime = new DateTime(StartDatum.Year, StartDatum.Month, StartDatum.Day, EindTijd.Hours, EindTijd.Minutes, EindTijd.Seconds),
+                Note = Notitie,
+            };
+
+            if (IsHoliday)
             {
-                await Application.Current.MainPage.DisplayAlert("Failed", $"End time can not be equal to start time!", "OK");
+                registratie.StartTime = new DateTime(StartDatum.Year, StartDatum.Month, StartDatum.Day);
+                registratie.EndTime = registratie.StartTime;  
+                registratie.IsHoliday = true;  
             }
             else
             {
-                registratie.StartTime = start;
-                registratie.EndTime = end;
-                registratie.Note = Notitie;
-                timeService.AddTimeRegistration(registratie);
+                if (registratie.EndTime < registratie.StartTime)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Failed", $"End time cannot be earlier than start time!", "OK");
+                    return;
+                }
+                else if (registratie.EndTime == registratie.StartTime)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Failed", $"End time cannot be equal to start time!", "OK");
+                    return;
+                }
+            }
 
-                await Application.Current.MainPage.DisplayAlert("Success", $"{registratie} added!", "OK");
+            timeService.AddTimeRegistration(registratie);
+            await Application.Current.MainPage.DisplayAlert("Success", $"Registration added!", "OK");
 
-                StartTijd = TimeSpan.Zero;
-                EindTijd = TimeSpan.Zero;
-                Notitie = string.Empty;
-            }          
+            StartTijd = new(9, 0, 0);
+            EindTijd = new(15, 0, 0);
+            Notitie = string.Empty;
+            IsHoliday = false; 
         }
     }
 }

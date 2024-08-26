@@ -1,11 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TimeregistrationApp.Models
 {
@@ -13,6 +8,9 @@ namespace TimeregistrationApp.Models
     {
         [ObservableProperty]
         private int month;
+
+        [ObservableProperty]
+        private int year;
 
         [ObservableProperty]
         private double totalTime;
@@ -25,12 +23,8 @@ namespace TimeregistrationApp.Models
             double totalMinutes = time.TotalMinutes;
             int hours = (int)(totalMinutes / 60);
             int minutes = (int)(totalMinutes % 60);
-            double totaal = (totalMinutes / 60) * 11;
-            string totalHours = $"{hours}:{minutes.ToString().PadRight(2,'0')}";
-            return $"{monthName} | {totalHours} {(hours == 1 ? "hour" : "hours")}";
-            //return $"{monthName} | {totalHours} uur | {totaal.ToString("C", new CultureInfo("nl-NL"))}";
+            string totalHours = $"{hours}:{minutes.ToString().PadLeft(2, '0')}"; 
+            return $"{monthName} {year} | {totalHours} {(hours == 1 ? "hour" : "hours")}";
         }
-
     }
-
 }

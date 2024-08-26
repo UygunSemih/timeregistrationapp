@@ -6,34 +6,61 @@
              xmlns:models="clr-namespace:TimeregistrationApp.Models"
              xmlns:viewmodels="clr-namespace:TimeregistrationApp.ViewModels"
              x:DataType="viewmodels:MainPageViewModel">
-
     <StackLayout Orientation="Vertical" Margin="20">
-        
+
         <Label Text="Date:"  FontSize="20"/>
         <DatePicker x:Name="startDatePicker"
                     Margin="0, 10"  
                     FontSize="22"
                     Date="{Binding StartDatum}"/>
-        
-        <Label Text="Start Time:"  FontSize="20"/>
+
+        <Label Text="Start Time:"  FontSize="20">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label" Binding="{Binding IsHoliday}" Value="True">
+                    <Setter Property="IsVisible" Value="False"/>
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
         <TimePicker x:Name="startTimePicker"
                     Margin="0, 10"
                     FontSize="22"
-                    Time="{Binding StartTijd}"/>
-        
-        <Label Text="End Time:"  FontSize="20"/>        
+                    Time="{Binding StartTijd}">
+            <TimePicker.Triggers>
+                <DataTrigger TargetType="TimePicker" Binding="{Binding IsHoliday}" Value="True">
+                    <Setter Property="IsVisible" Value="False"/>
+                </DataTrigger>
+            </TimePicker.Triggers>
+        </TimePicker>
+
+        <Label Text="End Time:"  FontSize="20">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label" Binding="{Binding IsHoliday}" Value="True">
+                    <Setter Property="IsVisible" Value="False"/>
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
         <TimePicker x:Name="endTimePicker"
                     Margin="0, 10"  
                     FontSize="22"
-                    Time="{Binding EindTijd}"/>        
+                    Time="{Binding EindTijd}">
+            <TimePicker.Triggers>
+                <DataTrigger TargetType="TimePicker" Binding="{Binding IsHoliday}" Value="True">
+                    <Setter Property="IsVisible" Value="False"/>
+                </DataTrigger>
+            </TimePicker.Triggers>
+        </TimePicker>
 
         <Label Text="Note:"  FontSize="20"/>
         <Entry x:Name="txtNote"
                Margin="0, 10"
-               FontSize="22"   
-               Text="{Binding Notitie}"
-               />
+               FontSize="22"
+               Text="{Binding Notitie}"/>
 
+        <StackLayout Orientation="Horizontal" Margin="0, 10">
+            <Label Text="Is Holiday:"  FontSize="20"/>
+            <CheckBox IsChecked="{Binding IsHoliday}"  HorizontalOptions="Start"  />
+        </StackLayout>
+        
         <Button x:Name="createTimeRegistrationButton"
                 Margin="0, 10"
                 FontSize="22"
@@ -41,6 +68,4 @@
                 TextColor="{StaticResource Black}"
                 Command="{Binding SaveTijdsRegistratieCommand}"/>
     </StackLayout>
-
-
 </ContentPage>
