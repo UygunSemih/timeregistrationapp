@@ -48,7 +48,7 @@ namespace TimeregistrationApp.ViewModels
             tijdsRegistratie.StartTime = start;
             tijdsRegistratie.EndTime = end;
             tijdsRegistratie.Note = notitie;
-            var result = await Application.Current.MainPage.DisplayAlert("Confirm!", $"Update {tijdsRegistratie}?", "OK!", "Cancel");
+            var result = await Application.Current!.MainPage!.DisplayAlert("Confirm!", $"Update {tijdsRegistratie}?", "OK!", "Cancel");
 
             if (result)
             {

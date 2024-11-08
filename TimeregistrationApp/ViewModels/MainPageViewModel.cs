@@ -50,18 +50,18 @@ namespace TimeregistrationApp.ViewModels
             {
                 if (registratie.EndTime < registratie.StartTime)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Failed", $"End time cannot be earlier than start time!", "OK");
+                    await Application.Current!.MainPage!.DisplayAlert("Failed", $"End time cannot be earlier than start time!", "OK");
                     return;
                 }
                 else if (registratie.EndTime == registratie.StartTime)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Failed", $"End time cannot be equal to start time!", "OK");
+                    await Application.Current!.MainPage!.DisplayAlert("Failed", $"End time cannot be equal to start time!", "OK");
                     return;
                 }
             }
 
             timeService.AddTimeRegistration(registratie);
-            await Application.Current.MainPage.DisplayAlert("Success", $"Registration added!", "OK");
+            await Application.Current!.MainPage!.DisplayAlert("Success", $"Registration added!", "OK");
 
             StartTijd = new(9, 0, 0);
             EindTijd = new(15, 0, 0);

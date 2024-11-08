@@ -6,6 +6,8 @@ using iText.IO.Font.Constants;
 using iText.Kernel.Font;
 using iText.Layout.Properties;
 using Cell = iText.Layout.Element.Cell;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.ApplicationModel;
 
 namespace TimeregistrationApp.Services
 {

@@ -1,0 +1,74 @@
+{
+  "settings": {
+    "components": {
+      "code": true,
+      "binaries": true
+    },
+    "targetId": "",
+    "targetDisplayName": ".NET 8.0"
+  },
+  "analysisStartTime": "2024-11-05T13:20:27.5244155Z",
+  "analysisEndTime": "2024-11-05T13:20:43.9772327Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 1,
+      "issues": 1,
+      "incidents": 1,
+      "effort": 1
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 0,
+        "Optional": 0,
+        "Potential": 1,
+        "Information": 0
+      },
+      "category": {
+        "NuGet": 1
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "TimeregistrationApp.csproj",
+      "startingProject": true,
+      "issues": 1,
+      "storyPoints": 1,
+      "ruleInstances": [
+        {
+          "incidentId": "f0106829-9c8f-4e34-b477-70261d8f9955",
+          "ruleId": "NuGet.0002",
+          "projectPath": "TimeregistrationApp.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Logging.Debug, 7.0.0\n\nRecommendation:\n\nMicrosoft.Extensions.Logging.Debug 8.0.1",
+              "protected": "Microsoft.Extensions.Logging.Debug, 7.0.0\n\nRecommendation:\n\nMicrosoft.Extensions.Logging.Debug 8.0.1"
+            },
+            "kind": "File",
+            "path": "TimeregistrationApp.csproj",
+            "snippet": "Microsoft.Extensions.Logging.Debug, 7.0.0\n\nRecommendation:\n\nMicrosoft.Extensions.Logging.Debug 8.0.1",
+            "protectedSnippet": "Microsoft.Extensions.Logging.Debug, 7.0.0\n\nRecommendation:\n\nMicrosoft.Extensions.Logging.Debug 8.0.1",
+            "label": "Microsoft.Extensions.Logging.Debug 7.0.0"
+          }
+        }
+      ]
+    }
+  ],
+  "rules": {
+    "NuGet.0002": {
+      "id": "NuGet.0002",
+      "description": "NuGet package upgrade is recommended for selected target framework.\n\nStandard .NET packages are recommended to have versions matching version of .NET that project targets.\n\nSome other packages also are known to work better for selected target frameworks.",
+      "label": "NuGet package upgrade is recommended",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262530",
+          "isCustom": false
+        }
+      ]
+    }
+  }
+}
